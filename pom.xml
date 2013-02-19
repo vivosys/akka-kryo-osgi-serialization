@@ -21,7 +21,6 @@
     <bundle-plugin.version>2.3.7</bundle-plugin.version>
     <scala-plugin.version>3.1.0</scala-plugin.version>
     <surefire-plugin.version>2.12.4</surefire-plugin.version>
-    <war-plugin.version>2.3</war-plugin.version>
 
     <!-- Other dependency versions -->
     <akka.version>2.1.0</akka.version>
@@ -69,22 +68,7 @@
             <arg>-deprecation</arg>
             <arg>-feature</arg>
             <arg>-encoding</arg><arg>UTF-8</arg>
-            <!--<arg>-uniqid</arg>-->
-            <!-- Needed for Akka Dataflow Concurrency: <arg>-P:continuations:enable</arg> -->
           </args>
-          <jvmArgs>
-            <jvmArg>-Xms64m</jvmArg>
-            <jvmArg>-Xmx1024m</jvmArg>
-          </jvmArgs>
-          <!-- Also needed for Akka Dataflow Concurrency
-          <compilerPlugins>
-            <compilerPlugin>
-              <groupId>org.scala-lang.plugins</groupId>
-              <artifactId>continuations</artifactId>
-              <version>${scala.version}</version>
-            </compilerPlugin>
-          </compilerPlugins>
-          -->
           <!--<useZincServer>true</useZincServer>-->
         </configuration>
       </plugin>
@@ -150,44 +134,13 @@
   </build>
 
   <dependencies>
-    <!-- This list of dependencies is grouped and then alpha-ordered -->
-
-    <!-- Logging =================================================================================================== -->
-    <!-- Provided by runtime, versions here should match runtime versions -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
       <!--<scope>provided</scope>-->
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.6.6</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-      <!--<scope>provided</scope>-->
-    </dependency>
-    <!-- Logging via logback
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <version>0.9.30</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>0.9.30</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
 
-    <!-- JVM and low-level dependencies ============================================================================ -->
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
@@ -199,19 +152,6 @@
       <artifactId>akka-actor_${scala.dependency.version}</artifactId>
       <version>${akka.version}</version>
     </dependency>
-<!--
-    <dependency>
-      <groupId>com.typesafe.akka</groupId>
-      <artifactId>akka-osgi_${scala.dependency.version}</artifactId>
-      <version>${akka.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.typesafe.akka</groupId>
-      <artifactId>akka-remote_${scala.dependency.version}</artifactId>
-      <version>${akka.version}</version>
-      <scope>test</scope>
-    </dependency>
--->
 
     <dependency>
       <groupId>com.esotericsoftware.kryo</groupId>
@@ -227,20 +167,6 @@
           <artifactId>reflectasm</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <!-- Common OSGi and framework dependencies ==================================================================== -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>${osgi.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <version>${osgi.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
