@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <groupId>com.vivosys.akkakryoserializer</groupId>
+  <artifactId>akkakryoserializer</artifactId>
+  <name>Akka Kryo Serialization</name>
+  <packaging>bundle</packaging>
+  <version>0.1.0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Plug-in versions -->
+    <bundle-plugin.version>2.3.7</bundle-plugin.version>
+    <scala-plugin.version>3.1.0</scala-plugin.version>
+    <surefire-plugin.version>2.12.4</surefire-plugin.version>
+    <war-plugin.version>2.3</war-plugin.version>
+
+    <!-- Other dependency versions -->
+    <akka.version>2.1.0</akka.version>
+    <!--<kryo.version>2.21.0.vivo_1</kryo.version>-->
+    <kryo.version>2.20</kryo.version> <!-- Not OSGi compatible, use an OSGi compatible build in the target environment -->
+    <osgi.version>4.2.0</osgi.version>
+    <scala.version>2.10.0</scala.version>
+    <scala.version.osgi>2.10.0</scala.version.osgi>
+    <scala.import.range><![CDATA[$<range;[===,=+0);${scala.version.osgi}>]]></scala.import.range>
+    <scala.dependency.version>2.10</scala.dependency.version>
+    <scalatest.version>1.8</scalatest.version>
+    <slf4j.version>1.6.6</slf4j.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.4.1</version>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>${scala-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>scala-compile-first</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>add-source</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>scala-test-compile</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <args>
+            <arg>-unchecked</arg>
+            <arg>-deprecation</arg>
+            <arg>-feature</arg>
+            <arg>-encoding</arg><arg>UTF-8</arg>
+            <!--<arg>-uniqid</arg>-->
+            <!-- Needed for Akka Dataflow Concurrency: <arg>-P:continuations:enable</arg> -->
+          </args>
+          <jvmArgs>
+            <jvmArg>-Xms64m</jvmArg>
+            <jvmArg>-Xmx1024m</jvmArg>
+          </jvmArgs>
+          <!-- Also needed for Akka Dataflow Concurrency
+          <compilerPlugins>
+            <compilerPlugin>
+              <groupId>org.scala-lang.plugins</groupId>
+              <artifactId>continuations</artifactId>
+              <version>${scala.version}</version>
+            </compilerPlugin>
+          </compilerPlugins>
+          -->
+          <!--<useZincServer>true</useZincServer>-->
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.5.1</version>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/main/scala</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire-plugin.version}</version>
+        <configuration>
+          <forkMode>once</forkMode>
+          <useFile>false</useFile>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- This list of dependencies is grouped and then alpha-ordered -->
+
+    <!-- Logging =================================================================================================== -->
+    <!-- Provided by runtime, versions here should match runtime versions -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+      <!--<scope>provided</scope>-->
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>1.6.6</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+      <!--<scope>provided</scope>-->
+    </dependency>
+    <!-- Logging via logback
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>0.9.30</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>0.9.30</version>
+      <scope>provided</scope>
+    </dependency>
+    -->
+
+    <!-- JVM and low-level dependencies ============================================================================ -->
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scala.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.typesafe.akka</groupId>
+      <artifactId>akka-actor_${scala.dependency.version}</artifactId>
+      <version>${akka.version}</version>
+    </dependency>
+<!--
+    <dependency>
+      <groupId>com.typesafe.akka</groupId>
+      <artifactId>akka-osgi_${scala.dependency.version}</artifactId>
+      <version>${akka.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.typesafe.akka</groupId>
+      <artifactId>akka-remote_${scala.dependency.version}</artifactId>
+      <version>${akka.version}</version>
+      <scope>test</scope>
+    </dependency>
+-->
+
+    <dependency>
+      <groupId>com.esotericsoftware.kryo</groupId>
+      <artifactId>kryo</artifactId>
+      <version>${kryo.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.esotericsoftware.minlog</groupId>
+          <artifactId>minlog</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.esotericsoftware.reflectasm</groupId>
+          <artifactId>reflectasm</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Common OSGi and framework dependencies ==================================================================== -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <version>${osgi.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>${osgi.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
