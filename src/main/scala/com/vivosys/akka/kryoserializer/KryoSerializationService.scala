@@ -5,6 +5,7 @@ import akka.serialization.{Serialization, Serializer}
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryo.io.{Output, Input}
 import com.esotericsoftware.kryo.serializers.DefaultArraySerializers.ByteArraySerializer
+import java.math.BigInteger
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -158,6 +159,12 @@ object FixedRegistrations extends ClassRegistrationHook {
 
   def classes() = Seq(
     classOf[Array[Byte]],
+    classOf[Array[String]],
+    classOf[Array[Integer]],
+    classOf[Array[Long]],
+    classOf[Array[Double]],
+    classOf[Array[BigInteger]],
+    classOf[Array[BigDecimal]],
 
     classOf[java.util.HashMap[_, _]],
     classOf[java.util.ArrayList[_]],
