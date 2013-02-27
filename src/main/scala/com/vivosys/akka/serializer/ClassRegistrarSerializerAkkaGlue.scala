@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2013 VIVO Systems <http://vivosys.com>
+ */
+
 package com.vivosys.akka.serializer
 
 import akka.actor.ActorSystem
